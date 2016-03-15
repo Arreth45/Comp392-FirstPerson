@@ -1,0 +1,25 @@
+{
+  "name": "comp392-lesson9",
+  "authors": [
+    "Jake Parnell <arreth45@gmail.com>"
+  ],
+  "description": "COMP392 Assignment 3 for Advanced Graphics",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "https://github.com/Arreth45/Comp392-FirstPerson",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "Scripts/lib"
+  ],
+  "dependencies": {
+    "three.js": "threejs#*",
+    "dat-gui": "~0.5.1",
+    "stats.js": "*",
+    "Physijs": "physijs#*"
+  }
+}
