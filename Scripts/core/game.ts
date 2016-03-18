@@ -146,7 +146,7 @@ var game = (() => {
 
         // Spot Light
         spotLight = new SpotLight(0xffffff);
-        spotLight.position.set(20, 40, -15);
+        spotLight.position.set(0, 40, 0);
         spotLight.castShadow = true;
         spotLight.intensity = 2;
         spotLight.lookAt(new Vector3(0, 0, 0));
@@ -255,7 +255,7 @@ var game = (() => {
         playerMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0x00ff00 }), 0.4, 0);
 
         player = new Physijs.BoxMesh(playerGeometry, playerMaterial, 1);
-        player.position.set(0, 30, 10);
+        player.position.set(0, 5, 10);
         player.receiveShadow = true;
         player.castShadow = true;
         player.name = "Player";
