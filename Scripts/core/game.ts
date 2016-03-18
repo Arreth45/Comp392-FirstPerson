@@ -73,6 +73,20 @@ var game = (() => {
     var directionLineGeomerty: Geometry;
     var directionLine: Line;
     var direction: Vector3;
+    
+    //main wall
+    var wallGeometry: CubeGeometry;
+    var wallMaterial: Physijs.Material;
+    var frontWall: Physijs.Mesh;
+    var backWall: Physijs.Mesh;
+    var leftWall: Physijs.Mesh;
+    var rightWall: Physijs.Mesh;
+    
+    var wall1: Physijs.Mesh;
+    var wall2: Physijs.Mesh;
+    var wall3: Physijs.Mesh;
+    var wall4: Physijs.Mesh;
+    var wall5: Physijs.Mesh;
 
     function init() {
         // Create to HTMLElements
@@ -157,6 +171,84 @@ var game = (() => {
         ground.name = "Ground";
         scene.add(ground);
         console.log("Added Burnt Ground to scene");
+        
+       
+        //Outer Walls
+        wallGeometry = new BoxGeometry(32,5,1);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
+        backWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
+        backWall.position.set(0,3,-16);
+        backWall.receiveShadow = true;
+        backWall.name = "wall";
+        scene.add(backWall);
+        
+        wallGeometry = new BoxGeometry(32,5,1);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
+        frontWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
+        frontWall.position.set(0,3,16);
+        frontWall.receiveShadow = true;
+        frontWall.name = "wall";
+        scene.add(frontWall);
+        
+        wallGeometry = new BoxGeometry(1,5,32);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
+        rightWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
+        rightWall.position.set(16,3,0);
+        rightWall.receiveShadow = true;
+        rightWall.name = "wall";
+        scene.add(rightWall);
+        
+        wallGeometry = new BoxGeometry(1,5,32);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
+        leftWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
+        leftWall.position.set(-16,3,0);
+        leftWall.receiveShadow = true;
+        leftWall.name = "wall";
+        scene.add(leftWall);
+        
+        //Actual Maze
+        
+        wallGeometry = new BoxGeometry(16,5,1);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
+        wall1 = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
+        wall1.position.set(8,3,-12);
+        wall1.receiveShadow = true;
+        wall1.name = "wall";
+        scene.add(wall1);
+        
+        wallGeometry = new BoxGeometry(16,5,1);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
+        wall2 = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
+        wall2.position.set(-8,3,-8);
+        wall2.receiveShadow = true;
+        wall2.name = "wall";
+        scene.add(wall2);
+        
+        wallGeometry = new BoxGeometry(16,5,1);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
+        wall3 = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
+        wall3.position.set(8,3,-4);
+        wall3.receiveShadow = true;
+        wall3.name = "wall";
+        scene.add(wall3);
+        
+        wallGeometry = new BoxGeometry(16,5,1);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
+        wall4 = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
+        wall4.position.set(-8,3,0);
+        wall4.receiveShadow = true;
+        wall4.name = "wall";
+        scene.add(wall4);
+        
+        wallGeometry = new BoxGeometry(16,5,1);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
+        wall5 = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
+        wall5.position.set(8,3,4);
+        wall5.receiveShadow = true;
+        wall5.name = "wall";
+        scene.add(wall5);
+        
+        
 
         //Player Object
         playerGeometry = new BoxGeometry(2, 2, 2, 2, 2, 2);
@@ -180,6 +272,7 @@ var game = (() => {
             }
         });
 
+/*
         directionLineMaterial = new LineBasic({ color: 0xffff00 });
         directionLineGeomerty = new Geometry();
         directionLineGeomerty.vertices.push(new Vector3(0, 0, 0)); // line origin
@@ -187,6 +280,10 @@ var game = (() => {
         directionLine = new Line(directionLineGeomerty, directionLineMaterial);
         player.add(directionLine);
         console.log("Added Direction line");
+        */
+        
+        player.add(camera);
+        camera.position.set(0,1,0);
 
         //Sphere Object
         sphereGeometry = new SphereGeometry(2, 32, 32);
@@ -262,63 +359,78 @@ var game = (() => {
     // Setup main game loop
     function gameLoop(): void {
         stats.update();
+        
+        checkControls();
 
-
-        if (keyboardControls.enabled) {
-            velocity = new Vector3();
-            var time: number = performance.now();
-            var delta: number = (time - prevTime) / 1000
-
-            if (isgrounded) {
-
-                if (keyboardControls.moveFoward) {
-                    console.log("Foward");
-                    velocity.z -= 40.0 * delta;
-                }
-                if (keyboardControls.moveBackward) {
-                    console.log("Backward");
-                    velocity.z += 40.0 * delta;
-                }
-                if (keyboardControls.moveLeft) {
-                    console.log("Left");
-                    velocity.x -= 40.0 * delta;
-                }
-                if (keyboardControls.moveRight) {
-                    console.log("Right");
-                    velocity.x += 40.0 * delta;
-                }
-                if (keyboardControls.jump) {
-                    console.log("Jump");
-                    velocity.y += 200.0 * delta;
-                    if (player.position.y > 4) {
-                        isgrounded = false;
-                    }
-                }
-
-                //Chaging Rotation
-                player.setAngularVelocity(new Vector3(0, -mouseControls.yaw, 0));
-                direction.addVectors(direction, velocity);
-
-                direction.applyQuaternion(player.quaternion);
-
-            } // isGrounded finishes
-            if (Math.abs(player.getLinearVelocity().x) < 20 && Math.abs(player.getLinearVelocity().z) < 20) {
-                player.applyCentralForce(direction);
-            }
-        } // controls enabled ends
-        else {
-            player.setAngularVelocity(new Vector3(0, 0, 0));
-        }
-
-
-
-        prevTime = time;
 
         // render using requestAnimationFrame
         requestAnimationFrame(gameLoop);
 
         // render the scene
         renderer.render(scene, camera);
+    }
+    
+    //check controls
+    function checkControls(): void {
+
+        if (keyboardControls.enabled) {
+            velocity = new Vector3();
+            var time: number = performance.now();
+            var delta: number = (time - prevTime) / 1000;
+
+            if (isgrounded) {
+                var direction = new Vector3(0, 0, 0);
+                if (keyboardControls.moveFoward) {
+                    velocity.z -= 400.0 * delta;
+                }
+                if (keyboardControls.moveBackward) {
+                    velocity.z += 400.0 * delta;
+                }
+                if (keyboardControls.moveLeft) {
+                    velocity.x -= 400.0 * delta;
+                }
+                if (keyboardControls.moveRight) {
+                    velocity.x += 400.0 * delta;
+                }
+                if (keyboardControls.jump) {
+                    velocity.y += 4000.0 * delta;
+                    if (player.position.y > 4) {
+                        isgrounded = false;
+                    }
+                }
+
+                player.setDamping(0.7, 0.1);
+                //Chaging Rotation
+                player.setAngularVelocity(new Vector3(0, mouseControls.yaw, 0));
+                direction.addVectors(direction, velocity);
+                direction.applyQuaternion(player.quaternion);
+                if (Math.abs(player.getLinearVelocity().x) < 20 && Math.abs(player.getLinearVelocity().y) < 10) {
+                    player.applyCentralForce(direction);
+                }
+                cameraLook();
+
+            } // isGrounded finishes
+
+            mouseControls.pitch = 0;
+            mouseControls.yaw = 0;
+
+            prevTime = time;
+        } // controls enabled ends
+        else {
+            player.setAngularVelocity(new Vector3(0, 0, 0));
+        }
+    }
+
+    //camera look
+    function cameraLook(): void {
+        var zenith: number = THREE.Math.degToRad(90);
+        var nadir: number = THREE.Math.degToRad(-90);
+
+        var cameraPitch: number = camera.rotation.x + mouseControls.pitch;
+
+        //constran the camera pitch
+        camera.rotation.x = THREE.Math.clamp(cameraPitch, nadir, zenith);
+
     }
 
     // Setup default renderer
@@ -334,8 +446,10 @@ var game = (() => {
     // Setup main camera for the scene
     function setupCamera(): void {
         camera = new PerspectiveCamera(35, config.Screen.RATIO, 0.1, 100);
+        /*
         camera.position.set(0, 10, 30);
         camera.lookAt(new Vector3(0, 0, 0));
+        */
         console.log("Finished setting up Camera...");
     }
 
