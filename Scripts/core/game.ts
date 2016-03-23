@@ -73,7 +73,7 @@ var game = (() => {
     var directionLineGeomerty: Geometry;
     var directionLine: Line;
     var direction: Vector3;
-    
+
     //main wall
     var wallGeometry: CubeGeometry;
     var wallMaterial: Physijs.Material;
@@ -81,12 +81,24 @@ var game = (() => {
     var backWall: Physijs.Mesh;
     var leftWall: Physijs.Mesh;
     var rightWall: Physijs.Mesh;
-    
+
     var wall1: Physijs.Mesh;
     var wall2: Physijs.Mesh;
     var wall3: Physijs.Mesh;
     var wall4: Physijs.Mesh;
     var wall5: Physijs.Mesh;
+
+    var hazardGeometry: CubeGeometry;
+    var hazardMaterial: Physijs.Material;
+    var hazard1: Physijs.Mesh;
+    var hazard2: Physijs.Mesh;
+    var hazard3: Physijs.Mesh;
+    var hazard4: Physijs.Mesh;
+    var hazard5: Physijs.Mesh;
+
+    var goalGeometry: CubeGeometry;
+    var goalMaterial: Physijs.Material;
+    var goal: Physijs.Mesh;
 
     function init() {
         // Create to HTMLElements
@@ -171,84 +183,117 @@ var game = (() => {
         ground.name = "Ground";
         scene.add(ground);
         console.log("Added Burnt Ground to scene");
-        
-       
+
+
         //Outer Walls
-        wallGeometry = new BoxGeometry(32,5,1);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
-        backWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
-        backWall.position.set(0,3,-16);
+        wallGeometry = new BoxGeometry(32, 5, 1);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
+        backWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        backWall.position.set(0, 3, -16);
         backWall.receiveShadow = true;
         backWall.name = "wall";
         scene.add(backWall);
-        
-        wallGeometry = new BoxGeometry(32,5,1);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
-        frontWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
-        frontWall.position.set(0,3,16);
+
+        wallGeometry = new BoxGeometry(32, 5, 1);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
+        frontWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        frontWall.position.set(0, 3, 16);
         frontWall.receiveShadow = true;
         frontWall.name = "wall";
         scene.add(frontWall);
-        
-        wallGeometry = new BoxGeometry(1,5,32);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
-        rightWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
-        rightWall.position.set(16,3,0);
+
+        wallGeometry = new BoxGeometry(1, 5, 32);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
+        rightWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        rightWall.position.set(16, 3, 0);
         rightWall.receiveShadow = true;
         rightWall.name = "wall";
         scene.add(rightWall);
-        
-        wallGeometry = new BoxGeometry(1,5,32);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
-        leftWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
-        leftWall.position.set(-16,3,0);
+
+        wallGeometry = new BoxGeometry(1, 5, 32);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
+        leftWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        leftWall.position.set(-16, 3, 0);
         leftWall.receiveShadow = true;
         leftWall.name = "wall";
         scene.add(leftWall);
-        
+
         //Actual Maze
-        
-        wallGeometry = new BoxGeometry(16,5,1);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
-        wall1 = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
-        wall1.position.set(8,3,-12);
+        wallGeometry = new BoxGeometry(16, 5, 1);
+        wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
+
+        wall1 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        wall1.position.set(8, 3, -12);
         wall1.receiveShadow = true;
         wall1.name = "wall";
         scene.add(wall1);
-        
-        wallGeometry = new BoxGeometry(16,5,1);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
-        wall2 = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
-        wall2.position.set(-8,3,-8);
+
+        wall2 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        wall2.position.set(-8, 3, -8);
         wall2.receiveShadow = true;
         wall2.name = "wall";
         scene.add(wall2);
-        
-        wallGeometry = new BoxGeometry(16,5,1);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
-        wall3 = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
-        wall3.position.set(8,3,-4);
+
+        wall3 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        wall3.position.set(8, 3, -4);
         wall3.receiveShadow = true;
         wall3.name = "wall";
         scene.add(wall3);
-        
-        wallGeometry = new BoxGeometry(16,5,1);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
-        wall4 = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
-        wall4.position.set(-8,3,0);
+
+        wall4 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        wall4.position.set(-8, 3, 0);
         wall4.receiveShadow = true;
         wall4.name = "wall";
         scene.add(wall4);
-        
-        wallGeometry = new BoxGeometry(16,5,1);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({color: 0xff00ff}),0,0);
-        wall5 = new Physijs.ConvexMesh(wallGeometry, wallMaterial,0);
-        wall5.position.set(8,3,4);
+
+        wall5 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        wall5.position.set(8, 3, 4);
         wall5.receiveShadow = true;
         wall5.name = "wall";
         scene.add(wall5);
-        
-        
+
+        //"electric hazards"
+        hazardGeometry = new BoxGeometry(1, 2, 5);
+        hazardMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xffff00 }), 0, 0);
+
+        hazard1 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
+        hazard1.position.set(8, 1, -12);
+        hazard1.receiveShadow = true;
+        hazard1.name = "hazard";
+        scene.add(hazard1);
+
+        hazard2 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
+        hazard2.position.set(8, 1, -8);
+        hazard2.receiveShadow = true;
+        hazard2.name = "hazard";
+        scene.add(hazard2);
+
+        hazard3 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
+        hazard3.position.set(8, 1, -4);
+        hazard3.receiveShadow = true;
+        hazard3.name = "hazard";
+        scene.add(hazard3);
+
+        hazard4 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
+        hazard4.position.set(8, 1, 0);
+        hazard4.receiveShadow = true;
+        hazard4.name = "hazard";
+        scene.add(hazard4);
+
+        hazard5 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
+        hazard5.position.set(8, 1, 4);
+        hazard5.receiveShadow = true;
+        hazard5.name = "hazard";
+        scene.add(hazard4);
+
+        //End Goal
+
+        goalGeometry = new BoxGeometry(1, 1, 1);
+        goalMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff0000 }), 0, 0);
+        goal = new Physijs.ConvexMesh(goalGeometry, goalMaterial, 0);
+        goal.position.set(32, 1, 32);
+        goal.name = "goal";
+        scene.add(goal);
 
         //Player Object
         playerGeometry = new BoxGeometry(2, 2, 2, 2, 2, 2);
@@ -270,20 +315,26 @@ var game = (() => {
             if (event.name === "Sphere") {
                 console.log("Hit Sphere");
             }
+            if (event.name === "hazard") {
+                console.log("Hit hazard");
+            }
+            if (event.name === "goal") {
+                console.log("Hit goal");
+            }
         });
 
-/*
-        directionLineMaterial = new LineBasic({ color: 0xffff00 });
-        directionLineGeomerty = new Geometry();
-        directionLineGeomerty.vertices.push(new Vector3(0, 0, 0)); // line origin
-        directionLineGeomerty.vertices.push(new Vector3(0, 0, -50)); //end of line
-        directionLine = new Line(directionLineGeomerty, directionLineMaterial);
-        player.add(directionLine);
-        console.log("Added Direction line");
-        */
-        
+        /*
+                directionLineMaterial = new LineBasic({ color: 0xffff00 });
+                directionLineGeomerty = new Geometry();
+                directionLineGeomerty.vertices.push(new Vector3(0, 0, 0)); // line origin
+                directionLineGeomerty.vertices.push(new Vector3(0, 0, -50)); //end of line
+                directionLine = new Line(directionLineGeomerty, directionLineMaterial);
+                player.add(directionLine);
+                console.log("Added Direction line");
+                */
+
         player.add(camera);
-        camera.position.set(0,1,0);
+        camera.position.set(0, 1, 0);
 
         //Sphere Object
         sphereGeometry = new SphereGeometry(2, 32, 32);
@@ -359,7 +410,7 @@ var game = (() => {
     // Setup main game loop
     function gameLoop(): void {
         stats.update();
-        
+
         checkControls();
 
 
@@ -369,7 +420,7 @@ var game = (() => {
         // render the scene
         renderer.render(scene, camera);
     }
-    
+
     //check controls
     function checkControls(): void {
 

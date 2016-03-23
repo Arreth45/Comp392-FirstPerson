@@ -78,6 +78,16 @@ var game = (function () {
     var wall3;
     var wall4;
     var wall5;
+    var hazardGeometry;
+    var hazardMaterial;
+    var hazard1;
+    var hazard2;
+    var hazard3;
+    var hazard4;
+    var hazard5;
+    var goalGeometry;
+    var goalMaterial;
+    var goal;
     function init() {
         // Create to HTMLElements
         blocker = document.getElementById("blocker");
@@ -120,7 +130,7 @@ var game = (function () {
         setupCamera(); // setup the camera
         // Spot Light
         spotLight = new SpotLight(0xffffff);
-        spotLight.position.set(20, 40, -15);
+        spotLight.position.set(0, 40, 0);
         spotLight.castShadow = true;
         spotLight.intensity = 2;
         spotLight.lookAt(new Vector3(0, 0, 0));
@@ -181,39 +191,66 @@ var game = (function () {
         wall1.receiveShadow = true;
         wall1.name = "wall";
         scene.add(wall1);
-        wallGeometry = new BoxGeometry(16, 5, 1);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
         wall2 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
         wall2.position.set(-8, 3, -8);
         wall2.receiveShadow = true;
         wall2.name = "wall";
         scene.add(wall2);
-        wallGeometry = new BoxGeometry(16, 5, 1);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
         wall3 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
         wall3.position.set(8, 3, -4);
         wall3.receiveShadow = true;
         wall3.name = "wall";
         scene.add(wall3);
-        wallGeometry = new BoxGeometry(16, 5, 1);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
         wall4 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
         wall4.position.set(-8, 3, 0);
         wall4.receiveShadow = true;
         wall4.name = "wall";
         scene.add(wall4);
-        wallGeometry = new BoxGeometry(16, 5, 1);
-        wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
         wall5 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
         wall5.position.set(8, 3, 4);
         wall5.receiveShadow = true;
         wall5.name = "wall";
         scene.add(wall5);
+        //"electric hazards"
+        hazardGeometry = new BoxGeometry(1, 2, 5);
+        hazardMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xffff00 }), 0, 0);
+        hazard1 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
+        hazard1.position.set(8, 1, -12);
+        hazard1.receiveShadow = true;
+        hazard1.name = "hazard";
+        scene.add(hazard1);
+        hazard2 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
+        hazard2.position.set(8, 1, -8);
+        hazard2.receiveShadow = true;
+        hazard2.name = "hazard";
+        scene.add(hazard2);
+        hazard3 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
+        hazard3.position.set(8, 1, -4);
+        hazard3.receiveShadow = true;
+        hazard3.name = "hazard";
+        scene.add(hazard3);
+        hazard4 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
+        hazard4.position.set(8, 1, 0);
+        hazard4.receiveShadow = true;
+        hazard4.name = "hazard";
+        scene.add(hazard4);
+        hazard5 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
+        hazard5.position.set(8, 1, 4);
+        hazard5.receiveShadow = true;
+        hazard5.name = "hazard";
+        scene.add(hazard4);
+        //End Goal
+        goalGeometry = new BoxGeometry(1, 1, 1);
+        goalMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff0000 }), 0, 0);
+        goal = new Physijs.ConvexMesh(goalGeometry, goalMaterial, 0);
+        goal.position.set(32, 1, 32);
+        goal.name = "goal";
+        scene.add(goal);
         //Player Object
         playerGeometry = new BoxGeometry(2, 2, 2, 2, 2, 2);
         playerMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0x00ff00 }), 0.4, 0);
         player = new Physijs.BoxMesh(playerGeometry, playerMaterial, 1);
-        player.position.set(0, 30, 10);
+        player.position.set(0, 5, 10);
         player.receiveShadow = true;
         player.castShadow = true;
         player.name = "Player";
@@ -226,6 +263,12 @@ var game = (function () {
             }
             if (event.name === "Sphere") {
                 console.log("Hit Sphere");
+            }
+            if (event.name === "hazard") {
+                console.log("Hit hazard");
+            }
+            if (event.name === "goal") {
+                console.log("Hit goal");
             }
         });
         /*
