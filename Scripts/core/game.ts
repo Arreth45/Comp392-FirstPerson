@@ -100,10 +100,45 @@ var game = (() => {
     var goalMaterial: Physijs.Material;
     var goal: Physijs.Mesh;
 
+    // var assets: createjs.LoadQueue;
+    var canvas: HTMLElement;
+    var stage: createjs.Stage;
+
+    var liveslabel: createjs.Text;
+    var livesValue: number;
+
+    function setupCanvas(): void {
+        canvas = document.getElementById("canvas");
+        canvas.setAttribute("width", config.Screen.WIDTH.toString());
+        canvas.setAttribute("height", (config.Screen.HEIGHT * 0.1).toString());
+        canvas.style.backgroundColor = "#000000";
+        stage = new createjs.Stage(canvas);
+    }
+
+    function setupScoreBoard(): void {
+        //init score and lives
+        livesValue = 5;
+        //lives Label
+        liveslabel = new createjs.Text(
+            "LIVES: " + livesValue,
+            "40px Consolas",
+            "#ffffff"
+        );
+
+        liveslabel.x = config.Screen.WIDTH * 0.1;
+        liveslabel.y = (config.Screen.HEIGHT * 0.15) * 0.2;
+        stage.addChild(liveslabel);
+        console.log("Added Lives Label to Stage");
+    }
+
+
     function init() {
         // Create to HTMLElements
         blocker = document.getElementById("blocker");
         instructions = document.getElementById("instructions");
+
+        setupCanvas();
+        setupScoreBoard();
 
 
         //check to see if pointerlock is supported
@@ -316,22 +351,23 @@ var game = (() => {
                 console.log("Hit Sphere");
             }
             if (event.name === "hazard") {
-                console.log("Hit hazard");
+                livesValue -= 1;
+                liveslabel.text = "Lives: " + livesValue;
             }
             if (event.name === "goal") {
                 console.log("Hit goal");
             }
         });
 
-        /*
-                directionLineMaterial = new LineBasic({ color: 0xffff00 });
-                directionLineGeomerty = new Geometry();
-                directionLineGeomerty.vertices.push(new Vector3(0, 0, 0)); // line origin
-                directionLineGeomerty.vertices.push(new Vector3(0, 0, -50)); //end of line
-                directionLine = new Line(directionLineGeomerty, directionLineMaterial);
-                player.add(directionLine);
-                console.log("Added Direction line");
-                */
+
+        directionLineMaterial = new LineBasic({ color: 0xffff00 });
+        directionLineGeomerty = new Geometry();
+        directionLineGeomerty.vertices.push(new Vector3(0, 0, 0)); // line origin
+        directionLineGeomerty.vertices.push(new Vector3(0, 0, -50)); //end of line
+        directionLine = new Line(directionLineGeomerty, directionLineMaterial);
+        player.add(directionLine);
+        console.log("Added Direction line");
+
 
         player.add(camera);
         camera.position.set(0, 1, 0);
@@ -412,6 +448,15 @@ var game = (() => {
         stats.update();
 
         checkControls();
+        stage.update();
+
+        if (livesValue = 0) {
+            livesValue = 5;
+            liveslabel.text = "LIVES: " + livesValue;
+            scene.remove(player);
+            player.position.set(0, 5, 10);
+            scene.add(player);
+        }
 
 
         // render using requestAnimationFrame
