@@ -18,18 +18,13 @@ var Object3D = THREE.Object3D;
 var SpotLight = THREE.SpotLight;
 var PointLight = THREE.PointLight;
 var AmbientLight = THREE.AmbientLight;
-var Control = objects.Control;
-var GUI = dat.GUI;
 var Color = THREE.Color;
 var Vector3 = THREE.Vector3;
 var Face3 = THREE.Face3;
-var Point = objects.Point;
 var CScreen = config.Screen;
 var Clock = THREE.Clock;
 var LineBasic = THREE.LineBasicMaterial;
 var Line = THREE.Line;
-//Custom Game Objects
-var gameObject = objects.gameObject;
 // Setup a Web Worker for Physijs DON'T TOUCH
 Physijs.scripts.worker = "/Scripts/lib/Physijs/physijs_worker.js";
 Physijs.scripts.ammo = "/Scripts/lib/Physijs/examples/js/ammo.js";
@@ -42,8 +37,6 @@ var game = (function () {
     var scene = new Scene(); // Instantiate Scene Object
     var renderer;
     var camera;
-    var control;
-    var gui;
     var stats;
     var blocker;
     var instructions;
@@ -88,10 +81,34 @@ var game = (function () {
     var goalGeometry;
     var goalMaterial;
     var goal;
+    // var assets: createjs.LoadQueue;
+    var canvas;
+    var stage;
+    var liveslabel;
+    var livesValue;
+    function setupCanvas() {
+        canvas = document.getElementById("canvas");
+        canvas.setAttribute("width", config.Screen.WIDTH.toString());
+        canvas.setAttribute("height", (config.Screen.HEIGHT * 0.1).toString());
+        canvas.style.backgroundColor = "#000000";
+        stage = new createjs.Stage(canvas);
+    }
+    function setupScoreBoard() {
+        //init score and lives
+        livesValue = 5;
+        //lives Label
+        liveslabel = new createjs.Text("LIVES: " + livesValue, "40px Consolas", "#ffffff");
+        liveslabel.x = config.Screen.WIDTH * 0.1;
+        liveslabel.y = (config.Screen.HEIGHT * 0.15) * 0.2;
+        stage.addChild(liveslabel);
+        console.log("Added Lives Label to Stage");
+    }
     function init() {
         // Create to HTMLElements
         blocker = document.getElementById("blocker");
         instructions = document.getElementById("instructions");
+        setupCanvas();
+        setupScoreBoard();
         //check to see if pointerlock is supported
         havePointerLock = 'pointerLockElement' in document ||
             'mozPointerLockElement' in document ||
@@ -157,28 +174,28 @@ var game = (function () {
         //Outer Walls
         wallGeometry = new BoxGeometry(32, 5, 1);
         wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
-        backWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        backWall = new Physijs.BoxMesh(wallGeometry, wallMaterial, 0);
         backWall.position.set(0, 3, -16);
         backWall.receiveShadow = true;
         backWall.name = "wall";
         scene.add(backWall);
         wallGeometry = new BoxGeometry(32, 5, 1);
         wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
-        frontWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        frontWall = new Physijs.BoxMesh(wallGeometry, wallMaterial, 0);
         frontWall.position.set(0, 3, 16);
         frontWall.receiveShadow = true;
         frontWall.name = "wall";
         scene.add(frontWall);
         wallGeometry = new BoxGeometry(1, 5, 32);
         wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
-        rightWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        rightWall = new Physijs.BoxMesh(wallGeometry, wallMaterial, 0);
         rightWall.position.set(16, 3, 0);
         rightWall.receiveShadow = true;
         rightWall.name = "wall";
         scene.add(rightWall);
         wallGeometry = new BoxGeometry(1, 5, 32);
         wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
-        leftWall = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        leftWall = new Physijs.BoxMesh(wallGeometry, wallMaterial, 0);
         leftWall.position.set(-16, 3, 0);
         leftWall.receiveShadow = true;
         leftWall.name = "wall";
@@ -186,64 +203,64 @@ var game = (function () {
         //Actual Maze
         wallGeometry = new BoxGeometry(16, 5, 1);
         wallMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff00ff }), 0, 0);
-        wall1 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        wall1 = new Physijs.BoxMesh(wallGeometry, wallMaterial, 0);
         wall1.position.set(8, 3, -12);
         wall1.receiveShadow = true;
         wall1.name = "wall";
         scene.add(wall1);
-        wall2 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        wall2 = new Physijs.BoxMesh(wallGeometry, wallMaterial, 0);
         wall2.position.set(-8, 3, -8);
         wall2.receiveShadow = true;
         wall2.name = "wall";
         scene.add(wall2);
-        wall3 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        wall3 = new Physijs.BoxMesh(wallGeometry, wallMaterial, 0);
         wall3.position.set(8, 3, -4);
         wall3.receiveShadow = true;
         wall3.name = "wall";
         scene.add(wall3);
-        wall4 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        wall4 = new Physijs.BoxMesh(wallGeometry, wallMaterial, 0);
         wall4.position.set(-8, 3, 0);
         wall4.receiveShadow = true;
         wall4.name = "wall";
         scene.add(wall4);
-        wall5 = new Physijs.ConvexMesh(wallGeometry, wallMaterial, 0);
+        wall5 = new Physijs.BoxMesh(wallGeometry, wallMaterial, 0);
         wall5.position.set(8, 3, 4);
         wall5.receiveShadow = true;
         wall5.name = "wall";
         scene.add(wall5);
         //"electric hazards"
-        hazardGeometry = new BoxGeometry(1, 2, 5);
+        hazardGeometry = new BoxGeometry(1, 2, 8);
         hazardMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xffff00 }), 0, 0);
-        hazard1 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
-        hazard1.position.set(8, 1, -12);
+        hazard1 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
+        hazard1.position.set(0, 1, -12);
         hazard1.receiveShadow = true;
         hazard1.name = "hazard";
         scene.add(hazard1);
-        hazard2 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
-        hazard2.position.set(8, 1, -8);
+        hazard2 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
+        hazard2.position.set(0, 1, -8);
         hazard2.receiveShadow = true;
         hazard2.name = "hazard";
         scene.add(hazard2);
-        hazard3 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
-        hazard3.position.set(8, 1, -4);
+        hazard3 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
+        hazard3.position.set(0, 1, -4);
         hazard3.receiveShadow = true;
         hazard3.name = "hazard";
         scene.add(hazard3);
-        hazard4 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
-        hazard4.position.set(8, 1, 0);
+        hazard4 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
+        hazard4.position.set(0, 1, 0);
         hazard4.receiveShadow = true;
         hazard4.name = "hazard";
         scene.add(hazard4);
-        hazard5 = new Physijs.ConvexMesh(hazardGeometry, hazardMaterial, 0);
-        hazard5.position.set(8, 1, 4);
+        hazard5 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
+        hazard5.position.set(0, 1, 4);
         hazard5.receiveShadow = true;
         hazard5.name = "hazard";
         scene.add(hazard4);
         //End Goal
-        goalGeometry = new BoxGeometry(1, 1, 1);
+        goalGeometry = new BoxGeometry(4, 1, 4);
         goalMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff0000 }), 0, 0);
-        goal = new Physijs.ConvexMesh(goalGeometry, goalMaterial, 0);
-        goal.position.set(32, 1, 32);
+        goal = new Physijs.BoxMesh(goalGeometry, goalMaterial, 0);
+        goal.position.set(30, 1, 30);
         goal.name = "goal";
         scene.add(goal);
         //Player Object
@@ -265,36 +282,25 @@ var game = (function () {
                 console.log("Hit Sphere");
             }
             if (event.name === "hazard") {
-                console.log("Hit hazard");
+                livesValue -= 1;
+                liveslabel.text = "Lives: " + livesValue;
             }
             if (event.name === "goal") {
                 console.log("Hit goal");
+                scene.remove(player);
+                player.position.set(0, 5, 10);
+                scene.add(player);
             }
         });
-        /*
-                directionLineMaterial = new LineBasic({ color: 0xffff00 });
-                directionLineGeomerty = new Geometry();
-                directionLineGeomerty.vertices.push(new Vector3(0, 0, 0)); // line origin
-                directionLineGeomerty.vertices.push(new Vector3(0, 0, -50)); //end of line
-                directionLine = new Line(directionLineGeomerty, directionLineMaterial);
-                player.add(directionLine);
-                console.log("Added Direction line");
-                */
+        directionLineMaterial = new LineBasic({ color: 0xffff00 });
+        directionLineGeomerty = new Geometry();
+        directionLineGeomerty.vertices.push(new Vector3(0, 0, 0)); // line origin
+        directionLineGeomerty.vertices.push(new Vector3(0, 0, -50)); //end of line
+        directionLine = new Line(directionLineGeomerty, directionLineMaterial);
+        player.add(directionLine);
+        console.log("Added Direction line");
         player.add(camera);
         camera.position.set(0, 1, 0);
-        //Sphere Object
-        sphereGeometry = new SphereGeometry(2, 32, 32);
-        sphereMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0x00ff00 }), 0, 0);
-        sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial, 1);
-        sphere.position.set(0, 60, 5);
-        sphere.receiveShadow = true;
-        sphere.castShadow = true;
-        sphere.name = "Sphere";
-        //scene.add(sphere);
-        // add controls
-        gui = new GUI();
-        control = new Control();
-        addControl(control);
         // Add framerate stats
         addStatsObject();
         console.log("Added Stats to scene...");
@@ -331,9 +337,6 @@ var game = (function () {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
-    function addControl(controlObject) {
-        /* ENTER CODE for the GUI CONTROL HERE */
-    }
     // Add Frame Rate Stats to the Scene
     function addStatsObject() {
         stats = new Stats();
@@ -347,6 +350,14 @@ var game = (function () {
     function gameLoop() {
         stats.update();
         checkControls();
+        stage.update();
+        if (livesValue == 0 || livesValue < 0) {
+            livesValue = 5;
+            liveslabel.text = "LIVES: " + livesValue;
+            scene.remove(player);
+            player.position.set(0, 5, 10);
+            scene.add(player);
+        }
         // render using requestAnimationFrame
         requestAnimationFrame(gameLoop);
         // render the scene
