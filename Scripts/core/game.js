@@ -166,7 +166,7 @@ var game = (function () {
         //Ground
         groundGeometry = new BoxGeometry(32, 1, 32);
         groundMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xe75d14 }), 0, 0);
-        ground = new Physijs.ConvexMesh(groundGeometry, groundMaterial, 0);
+        ground = new Physijs.BoxMesh(groundGeometry, groundMaterial, 0);
         ground.receiveShadow = true;
         ground.name = "Ground";
         scene.add(ground);
@@ -232,27 +232,27 @@ var game = (function () {
         hazardGeometry = new BoxGeometry(1, 2, 8);
         hazardMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xffff00 }), 0, 0);
         hazard1 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
-        hazard1.position.set(0, 1, -12);
+        hazard1.position.set(0.5, 1, -12);
         hazard1.receiveShadow = true;
         hazard1.name = "hazard";
         scene.add(hazard1);
         hazard2 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
-        hazard2.position.set(0, 1, -8);
+        hazard2.position.set(0.5, 1, -8);
         hazard2.receiveShadow = true;
         hazard2.name = "hazard";
         scene.add(hazard2);
         hazard3 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
-        hazard3.position.set(0, 1, -4);
+        hazard3.position.set(0.5, 1, -4);
         hazard3.receiveShadow = true;
         hazard3.name = "hazard";
         scene.add(hazard3);
         hazard4 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
-        hazard4.position.set(0, 1, 0);
+        hazard4.position.set(0.5, 1, 0);
         hazard4.receiveShadow = true;
         hazard4.name = "hazard";
         scene.add(hazard4);
         hazard5 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
-        hazard5.position.set(0, 1, 4);
+        hazard5.position.set(0.5, 1, 4);
         hazard5.receiveShadow = true;
         hazard5.name = "hazard";
         scene.add(hazard4);
@@ -260,7 +260,7 @@ var game = (function () {
         goalGeometry = new BoxGeometry(4, 1, 4);
         goalMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff0000 }), 0, 0);
         goal = new Physijs.BoxMesh(goalGeometry, goalMaterial, 0);
-        goal.position.set(30, 1, 30);
+        goal.position.set(15, 1, -15);
         goal.name = "goal";
         scene.add(goal);
         //Player Object
@@ -385,7 +385,7 @@ var game = (function () {
                 }
                 if (keyboardControls.jump) {
                     velocity.y += 4000.0 * delta;
-                    if (player.position.y > 4) {
+                    if (player.position.y > 5) {
                         isgrounded = false;
                     }
                 }

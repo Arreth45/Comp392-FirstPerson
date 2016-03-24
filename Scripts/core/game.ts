@@ -132,7 +132,6 @@ var game = (() => {
         setupCanvas();
         setupScoreBoard();
 
-
         //check to see if pointerlock is supported
         havePointerLock = 'pointerLockElement' in document ||
             'mozPointerLockElement' in document ||
@@ -147,20 +146,16 @@ var game = (() => {
         //Check to see if we have pointer lock
         if (havePointerLock) {
             element = document.body;
-
             instructions.addEventListener('click', () => {
-
                 //ask the user for pointer lock
                 console.log("Requesting PointerLock");
-
                 element.requestPointerLock = element.requestPointerLock ||
                     element.mozRequestPointerLock ||
                     element.webkitRequestPointerLock;
-
                 element.requestPointerLock();
             });
 
-            document.addEventListener('pointerlockchange', pointerLockChange);
+           document.addEventListener('pointerlockchange', pointerLockChange);
             document.addEventListener('mozpointerlockchange', pointerLockChange);
             document.addEventListener('webkitpointerlockchange', pointerLockChange);
             document.addEventListener('pointerlockerror', pointerLockError);
@@ -283,31 +278,31 @@ var game = (() => {
         hazardMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xffff00 }), 0, 0);
 
         hazard1 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
-        hazard1.position.set(0, 1, -12);
+        hazard1.position.set(0.5, 1, -12);
         hazard1.receiveShadow = true;
         hazard1.name = "hazard";
         scene.add(hazard1);
 
         hazard2 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
-        hazard2.position.set(0, 1, -8);
+        hazard2.position.set(0.5, 1, -8);
         hazard2.receiveShadow = true;
         hazard2.name = "hazard";
         scene.add(hazard2);
 
         hazard3 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
-        hazard3.position.set(0, 1, -4);
+        hazard3.position.set(0.5, 1, -4);
         hazard3.receiveShadow = true;
         hazard3.name = "hazard";
         scene.add(hazard3);
 
         hazard4 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
-        hazard4.position.set(0, 1, 0);
+        hazard4.position.set(0.5, 1, 0);
         hazard4.receiveShadow = true;
         hazard4.name = "hazard";
         scene.add(hazard4);
 
         hazard5 = new Physijs.BoxMesh(hazardGeometry, hazardMaterial, 0);
-        hazard5.position.set(0, 1, 4);
+        hazard5.position.set(0.5, 1, 4);
         hazard5.receiveShadow = true;
         hazard5.name = "hazard";
         scene.add(hazard4);
@@ -316,7 +311,7 @@ var game = (() => {
         goalGeometry = new BoxGeometry(4, 1, 4);
         goalMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff0000 }), 0, 0);
         goal = new Physijs.BoxMesh(goalGeometry, goalMaterial, 0);
-        goal.position.set(30, 1, 30);
+        goal.position.set(15, 1, -15);
         goal.name = "goal";
         scene.add(goal);
 
@@ -461,7 +456,7 @@ var game = (() => {
                 }
                 if (keyboardControls.jump) {
                     velocity.y += 4000.0 * delta;
-                    if (player.position.y > 4) {
+                    if (player.position.y > 5) {
                         isgrounded = false;
                     }
                 }
